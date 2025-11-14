@@ -1,0 +1,435 @@
+{
+  "name": "Relatorio ADS",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": "={{ 7 }}",
+              "triggerAtMinute": "={{ 0 }}"
+            }
+          ]
+        }
+      },
+      "id": "8c901e41-e186-43e3-9eee-2328da8905f6",
+      "name": "Gatilho por Horário",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        1472
+      ]
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v17.0",
+        "node": "=act_{{ $json.metaAct }}",
+        "edge": "insights",
+        "allowUnauthorizedCerts": true,
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "time_increment",
+                "value": "1"
+              },
+              {
+                "name": "level",
+                "value": "ad"
+              },
+              {
+                "name": "fields",
+                "value": "=campaign_id,\ncampaign_name,\nadset_id,\nadset_name,\nad_id,\nad_name,\nspend,\nimpressions,\nclicks,\ncpc,\ncpm,\ncpp,\nctr,\nobjective,\nreach,\nactions"
+              },
+              {
+                "name": "limit",
+                "value": "3000"
+              },
+              {
+                "name": "date_preset",
+                "value": "=last_7d"
+              }
+            ]
+          }
+        }
+      },
+      "id": "de13efb4-7f7c-406d-9141-11fbfae02f20",
+      "name": "Buscar Dados no Meta",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "position": [
+        48,
+        1472
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "let totalSpend = 0;\nlet totalLeads = 0;\nlet sumCPM = 0;\nlet sumCPP = 0;\nlet sumCTR = 0;\nlet totalClicks = 0;\nlet countCPM = 0;\nlet countCPP = 0;\nlet countCTR = 0;\n\n// Função para converter string de valores para float, tratando vírgula, espaços e quebras de linha\nfunction convertToFloat(value) {\n    if (!value || value.trim() === \"\") return 0;\n    return parseFloat(value.replace(',', '.').replace(/\\n/g, '').trim()) || 0;\n}\n\n// Itera sobre cada item (registro de campanha)\nitems.forEach(item => {\n    const jsonData = item.json;\n\n    // Acumula o valor de investimento total\n    if (jsonData.total_investido !== undefined) {\n        totalSpend += convertToFloat(jsonData.total_investido);\n    }\n\n    // Acumula o total de cliques (correção: usar \"total_clicks\" do input)\n    if (jsonData.total_clicks !== undefined) {\n        totalClicks += parseInt(jsonData.total_clicks.replace(/\\n/g, '').trim(), 10) || 0;\n    }\n\n    // Acumula mensagens iniciadas (supondo que representa leads)\n    if (jsonData.menssagens_iniciadas !== undefined) {\n        totalLeads += parseInt(jsonData.menssagens_iniciadas.replace(/\\n/g, '').trim(), 10) || 0;\n    }\n\n    // Acumula os valores de cpc, ctr para calcular a média\n    if (jsonData.cpc !== undefined) {\n        sumCPP += convertToFloat(jsonData.cpc);\n        countCPP++;\n    }\n    if (jsonData.ctr !== undefined) {\n        sumCTR += convertToFloat(jsonData.ctr);\n        countCTR++;\n    }\n});\n\n// Calcula as médias\nconst avgCPC = totalClicks > 0 ? (totalSpend / totalClicks) : 0;\nconst avgCPP = countCPP > 0 ? (sumCPP / countCPP) : 0;\nconst avgCTR = countCTR > 0 ? (sumCTR / countCTR) : 0;\nconst cpl = totalLeads > 0 ? (totalSpend / totalLeads) : 0;  // Calcula o CPL\n\n// Retorna os dados acumulados e formatados corretamente\nreturn [\n    {\n        json: {\n            totalSpend: totalSpend.toFixed(2).replace('.', ','),\n            totalLeads: totalLeads,\n            totalClicks: totalClicks,\n            avgCPC: avgCPC.toFixed(2).replace('.', ','),\n            avgCPP: avgCPP.toFixed(2).replace('.', ','),\n            avgCTR: avgCTR.toFixed(2).replace('.', ','),\n            cpl: cpl.toFixed(2).replace('.', ',')\n        }\n    }\n];\n"
+      },
+      "id": "f6c13c4c-658b-4188-9d50-8e107401f0b5",
+      "name": "Script de Cálculo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        1472
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf0e3fda-5877-49bc-8b48-062cdb365c5a",
+              "name": "campanha",
+              "value": "={{ $json.data[0,1,2,3,4,5,6,7].campaign_name }}",
+              "type": "string"
+            },
+            {
+              "id": "7e5a5dea-d0cd-41f4-81e0-ca9817add1a1",
+              "name": "total_clicks",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.clicks, 10) || 0), 0) }}\n",
+              "type": "string"
+            },
+            {
+              "id": "4163b43e-6f99-4b25-ab55-3e6cc986d4e5",
+              "name": "cpc",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.cpc, 10) || 0), 0) }}",
+              "type": "string"
+            },
+            {
+              "id": "bc1bf727-262f-4766-83db-b988d135c88e",
+              "name": "ctr",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.ctr, 10) || 0), 0) }}",
+              "type": "string"
+            },
+            {
+              "id": "50f8d7f2-bd1d-44e2-b552-da6f07d88ed0",
+              "name": "total_investido",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.spend, 10) || 0), 0) }}",
+              "type": "string"
+            },
+            {
+              "id": "86f64309-6c37-4c68-bbd5-c33355a03447",
+              "name": "menssagens_iniciadas",
+              "value": "={{ $json.data.reduce((sum, entry) => {\n  const action = entry.actions?.find(action => action.action_type === \"onsite_conversion.total_messaging_connection\");\n  const value = action?.value?.toString().trim() || \"0\"; // Garante que seja string, remove espaços/vazios e usa \"0\" se necessário\n  return sum + (parseInt(value, 10) || 0);\n}, 0) }}",
+              "type": "string"
+            },
+            {
+              "id": "1d47b0c5-8640-4e45-8bb0-28ab663cd705",
+              "name": "Engajamento",
+              "value": "={{ $json.data.reduce((sum, entry) => {\n  const action = entry.actions?.find(action => action.action_type === \"post_engagement\");\n  const value = action?.value?.toString().trim() || \"0\"; // Garante que seja string, remove espaços/vazios e usa \"0\" se necessário\n  return sum + (parseInt(value, 10) || 0);\n}, 0) }}\n",
+              "type": "string"
+            },
+            {
+              "id": "c7926028-6f42-46e3-b2ca-3e0591c8171a",
+              "name": "Data_inicio",
+              "value": "={{ $('Set Variáveis').item.json.desde }}",
+              "type": "string"
+            },
+            {
+              "id": "fea5617c-a01d-487f-a207-7c7882511d81",
+              "name": "data_final",
+              "value": "={{ $('Set Variáveis').item.json['até'] }}",
+              "type": "string"
+            },
+            {
+              "id": "42a730b2-4013-4a6c-a8d4-af0ae4ee852d",
+              "name": "Impressões",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.impressions, 10) || 0), 0) }}",
+              "type": "string"
+            },
+            {
+              "id": "bbb3bf61-9a33-4403-9f70-ed500d938958",
+              "name": "Alcance",
+              "value": "={{ $json.data.reduce((sum, entry) => sum + (parseInt(entry.reach, 10) || 0), 0) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e085b6d-027e-4c1d-81ae-34fe4e01d92d",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        1472
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -480,
+        1312
+      ],
+      "id": "91311ec4-448d-42f9-b44d-e711bdc8a6b6",
+      "name": "Google Sheets1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -240,
+        1312
+      ],
+      "id": "5bf48b4d-5d38-43d9-a992-a8c995571218",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18df9941-85bc-4990-8b08-575a4fee231d",
+              "name": "metaAct",
+              "value": "=ID DA CONTA DO CLIENTE",
+              "type": "string"
+            },
+            {
+              "id": "7807acae-82fc-4c7d-8913-44a6c697d510",
+              "name": "grupocliente",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "fe2eac3e-db11-4a7b-9a6e-6c7cab970f27",
+              "name": "desde",
+              "value": "={{$today.minus({days: 7}).toFormat('yyyy-MM-dd')}}",
+              "type": "string"
+            },
+            {
+              "id": "3087bf5e-938c-4a74-8313-bc02c38226a5",
+              "name": "até",
+              "value": "={{$today.minus({days: 1}).toFormat('yyyy-MM-dd')}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "19c4a719-739a-43d1-9fe9-6c193587bf49",
+      "name": "Set Variáveis",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        1472
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<systemData>\nData de hoje: {{ $now.weekdayLong }}, {{ $now.format('dd/MM/yyyy') }}, {{ $now.hour.toString().padStart(2, '0') }}:{{ $now.minute.toString().padStart(2, '0') }}\n</systemData>\n\n<Agent>\n\n  <Name>Max</Name>\n  <Description>Gestor de tráfego pago e Analista de dados da Feejo</Description>\n  <Language>Português Brasileiro</Language>\n\n  <Personality>\n    Inteligente, prestativo e amigável, com tom de comunicação informal e foco na resolução eficiente das necessidades dos clientes.\n  </Personality>\n\n  <CommunicationStyle>\n    <Style>Amigável e Descontraido</Style>\n    <Guide>\n      [\n        \"Seja sempre cordial e educado.\",\n        \"Responda de forma clara e concisa.\",\n        \"Adapte sua comunicação ao nível de entendimento do cliente.\",\n        \"Evite jargões técnicos e explique termos complexos, quando necessário.\",\n        \"Se não souber a resposta, ofereça alternativas e encaminhe para atendimento humano.\",\n        \"Responda com agilidade e sem atrasos desnecessários.\"\n      ]\n    </Guide>\n  </CommunicationStyle>\n\n  <Functionalities>\n    - Apresentação inicial (saudação, identificação do cliente).\n    - Relatório de métricas e comentário sobre resultados.\n  </Functionalities>\n\n  <Flow>\n    1. **Saudação e Recepção do Cliente:**\n       - \"Olá, tudo bem? Sou o Max, assistente virtual da Feejo. Vou te passar os resultados dos anúncios no Meta Ads dos últimos 7 dias do {{ $('Loop Over Items').item.json.Nome_Negocio }}\"\n  \n\n    2. **Apresentação dos Resultados:**\n       - item por item, Valor gasto {{ $json.totalSpend }}, Impressões {{ $('Edit Fields').item.json['Impressões'] }}, Alcance {{ $('Edit Fields').item.json.Alcance }}, Total de leads {{ $json.totalLeads }},Total de Cliques{{ $json.totalClicks }}, Custo por Clique {{ $json.avgCPC }}, {{ $json.avgCPP }},{{ $json.avgCTR }}, {{ $json.cpl }}, Engajamento {{ $('Edit Fields').item.json.Engajamento }}, Data de Início {{ $('Edit Fields').item.json.Data_inicio }}, Data de Fim {{ $('Edit Fields').item.json.data_final }}     dos últimos 7 dias.\n\n \n\n\n\n  <Rules>\n    - Sempre baseie as respostas em dados disponíveis.\n    - Evite adivinhar ou fazer suposições.\n    - Se o dado for igual a zero, não mensione ele.\n    - Seja transparente caso não tenha uma resposta imediata.\n    - Não forneça informações sensíveis ou inventadas.\n    - Use linguagem amigável e acessível.\n    - Forneça um comentário que anime o cliente sobre os resultados, porém sem inventar dados.\n    - Não converse nada além de enviar os dados e comentário.\n  </Rules>\n\n</Agent>",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        832,
+        1472
+      ],
+      "id": "feaae0ed-2f67-4813-b0c4-8678a97f0f1f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        768,
+        1648
+      ],
+      "id": "34627c62-c178-4e3b-9f80-73d2f1f48d18",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        1152
+      ],
+      "id": "063841bb-32ba-4f20-920b-83ce12e541bb"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "SUA INSTANCIA AQUI",
+        "remoteJid": "=NUMERO DO CLIENTE AQUI",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        1472
+      ],
+      "id": "d029cb1b-e353-413e-adaa-a1c05469ebb7",
+      "name": "Envia para cliente"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "SUA INSTANCIA AQUI",
+        "remoteJid": "=SEU WHATSAPP AQUI",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        1696
+      ],
+      "id": "94220b67-7a8d-4d2c-9ae6-f954e747dee1",
+      "name": "Envia para Head"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gatilho por Horário": {
+      "main": [
+        [
+          {
+            "node": "Set Variáveis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Dados no Meta": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Script de Cálculo": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Script de Cálculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variáveis": {
+      "main": [
+        [
+          {
+            "node": "Buscar Dados no Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Envia para Head",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Envia para cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9b51e8fc-ce1b-4729-a73a-9e3323af122a",
+  "meta": {
+    "instanceId": "32b8deda9210608c7a7751591224c71434f835b30c8b9ce6fc9cf2f83f3dc2f1"
+  },
+  "id": "pixKktLl1S6JZv26",
+  "tags": []
+}

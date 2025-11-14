@@ -1,0 +1,3122 @@
+{
+  "name": "imob",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.ogg",
+          "mimeType": "application/ogg"
+        }
+      },
+      "id": "3ea2be50-c272-489f-91b5-47ff5b60db41",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c5ccbc9-69d1-4b13-a7c3-e6945bc8c655",
+              "name": "data",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9e199fe7-1d84-4de6-8287-41d866e7262e",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.png",
+          "mimeType": "image/png"
+        }
+      },
+      "id": "4bbd2400-e007-47c3-a362-c78c794e2a63",
+      "name": "Convert to File1",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c5ccbc9-69d1-4b13-a7c3-e6945bc8c655",
+              "name": "data",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fcb581f7-bdea-4363-8be6-c0b9d5976df2",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "52aaf749-fe4f-44e4-880e-15b2bfc027f1",
+                    "leftValue": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"messageType\"] }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "e514e613-fd6a-48bd-b0ae-bae2448c810e",
+                    "leftValue": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"messageType\"] }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"messageType\"] }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c9a7b9fa-752e-487a-8ac2-ffb904d21521"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "c0e434dd-1268-421d-b81b-3a5e90ed9550",
+                    "leftValue": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"messageType\"] }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "ead847ea-debe-4c53-bc85-e658f6f79321",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.message.documentMessage.url }}",
+                    "rightValue": "url",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "406d29b8-1595-4b4c-87f3-97895e6fcd4f",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1392,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50cebc66-2dbc-4c7a-a09e-83ffb0f52991",
+              "name": "textMessage",
+              "value": "={{ $('Variáveis Globais').item.json.mensagem }}",
+              "type": "string"
+            },
+            {
+              "id": "2fee3c6f-d1ea-4ab4-b043-a303fac29d1f",
+              "name": "id",
+              "value": "={{ $('Webhook').item.json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "48362c3d-4c8e-409c-8c56-0a9a10718164",
+              "name": "timestamp",
+              "value": "={{ $('Webhook').item.json.body.data.messageTimestamp.toDateTime('s') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "24fdd8c3-4a70-4f18-bd5e-c4587428085e",
+      "name": "Edit Fields4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1e66db0-00dc-481d-951c-1fde558e268e",
+              "name": "text",
+              "value": "={{ $json.output.split('\\n\\n') }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "867933a7-591a-4ef7-b534-cccecc8b07d2",
+      "name": "Edit Fields5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4480,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "text",
+        "options": {}
+      },
+      "id": "323eae60-9418-47da-881d-825fc2f8d577",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        4640,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d88c137-383f-4307-b3cc-1f6a560ea67b",
+              "name": "telefone",
+              "value": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "7e2f520e-4952-425b-82ca-792cc46680d4",
+              "name": "mensagem",
+              "value": "={{ $('Webhook').item.json.body.data.message.conversation }}{{ $('Webhook').item.json.body.data.message.extendedTextMessage.text }}",
+              "type": "string"
+            },
+            {
+              "id": "8c0d74b7-0312-4d2f-90f2-dc7cb921aa47",
+              "name": "instancia-evo",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "6b492eef-938c-4818-84ae-f6771e47bea8",
+              "name": "http-evo",
+              "value": "={{ $json.body.server_url }}",
+              "type": "string"
+            },
+            {
+              "id": "59a74131-7922-4c61-9af2-7da6008f2bd8",
+              "name": "apikey-evo",
+              "value": "={{ $json.body.apikey }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "34562e99-1454-4b12-8453-4b6ed15fd752",
+      "name": "Variáveis Globais",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a6d9aac-8565-4c58-abe3-8741393a5535",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        704
+      ],
+      "id": "2560a9d2-54f3-4414-afe7-b26f2e198363",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "edaacaa2-f8b1-4ed7-9ef6-c17edcb98480",
+              "leftValue": "={{ $json.status_de_ia }}",
+              "rightValue": "I.A",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        592
+      ],
+      "id": "e024f31d-2fb3-4c82-8d54-fa7e80fc65b0",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "afb49487-4f8f-4ea9-90f5-47c408358275",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        1984,
+        528
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "u9vPkaA1g5yAuWIC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Descreva todo o conteudo da imagem. Responda sem acento, sem hifens",
+        "inputType": "base64",
+        "options": {}
+      },
+      "id": "dffec4e5-d84d-46e1-8d3c-4e3708dd7a78",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        1984,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8b9f9562-81d7-4141-9a1a-bac7b62d3acf",
+        "options": {}
+      },
+      "id": "b9d19b67-4945-4fac-8952-f32e1124f569",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        48,
+        704
+      ],
+      "webhookId": "8b9f9562-81d7-4141-9a1a-bac7b62d3acf"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        576
+      ],
+      "id": "f7ae31ea-e59d-44be-9950-bb46e950e777",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e588faa1-978e-497f-8e40-39d70a808bb1",
+              "name": "textMessage",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "781d20b3-9775-4f3f-aa6d-5fdba20a0322",
+              "name": "id",
+              "value": "={{ $('Webhook').item.json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "51bc27b2-8b60-4b1b-81fa-68e52a32ab6f",
+              "name": "timestamp",
+              "value": "={{ $('Webhook').item.json.body.data.messageTimestamp.toDateTime('s') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2128,
+        528
+      ],
+      "id": "4badd3b7-b169-4932-b682-ce9286c0261d",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a3a810c-6f41-4180-8571-17c988f6b334",
+              "name": "textMessage",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "fd4d64a0-8ad2-42c2-af59-f8b5cd2061b1",
+              "name": "id",
+              "value": "={{ $('Webhook').item.json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a7787efb-d40e-4bf3-8a4d-11a069017cad",
+              "name": "timestamp",
+              "value": "={{ $('Webhook').item.json.body.data.messageTimestamp.toDateTime('s') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2128,
+        656
+      ],
+      "id": "b8bb9fbc-9863-4610-b6fb-6073751e9bc5",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5e18f57d-9d02-4ab4-99ec-92201f282fa6",
+              "name": "base64",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e9ccad83-ff5a-4c7d-b6ab-79969ac0d2a4",
+      "name": "separa o base1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "options": {}
+      },
+      "id": "37892bf2-8b3c-4ffc-bf9a-7f09f4527262",
+      "name": "Converte documento",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "983333f1-83e4-40f8-8b41-093c2dae089d",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0115a121-aa4c-4c57-8c9b-e258d5097b67",
+              "name": "textMessage",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "a3f2c204-ca74-4262-b2cb-e1eb79d98d37",
+              "name": "id",
+              "value": "={{ $('Webhook').item.json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "000a39ee-47c7-40d8-8cda-d703da328714",
+              "name": "timestamp",
+              "value": "={{ $('Webhook').item.json.body.data.messageTimestamp.toDateTime('s') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32f14621-27dc-4fc5-938e-7a20f9ca96d2",
+      "name": "separa o telefone e texto3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2128,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        752
+      ],
+      "id": "3823ffeb-1826-44d0-8cd1-cc714324103c",
+      "name": "Wait3",
+      "webhookId": "87bc2a3a-4eeb-45da-ac20-51be13c1f9f7"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Variáveis Globais').first().json.telefone }}",
+        "messageData": "={{ $json.toJsonString() }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2768,
+        624
+      ],
+      "id": "71205c23-bfc1-490a-82eb-592b5d2a4978",
+      "name": "Envia"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "messages",
+        "key": "={{ $('Variáveis Globais').first().json.telefone }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2960,
+        624
+      ],
+      "id": "d1aa8686-ac3d-4d29-ad67-89e6cc4f2228",
+      "name": "Buscar"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ JSON.parse($json.messages.last()).id }}",
+                    "rightValue": "={{ $('Merge').item.json.id }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "id": "51d91487-7761-4204-9d58-51d7adca92ef"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nothing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1846612e-0136-490e-9d0f-1086a79361cb",
+                    "leftValue": "={{ JSON.parse($json.messages.last()).timestamp }}",
+                    "rightValue": "={{ $now.minus(15,'seconds') }}",
+                    "operator": {
+                      "type": "dateTime",
+                      "operation": "before"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Prossegue"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Espera"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3168,
+        608
+      ],
+      "id": "7c04649d-b4a0-431b-b615-10a551398144",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3408,
+        432
+      ],
+      "id": "0d77b77f-14ef-4ad4-a948-9563305d279c",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3408,
+        800
+      ],
+      "id": "7abbe66d-04e0-4193-a0f8-afc376b3e0eb",
+      "name": "Wait4",
+      "webhookId": "56634b65-c3c0-453a-b3b1-2c9aa810a45a"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Variáveis Globais').first().json.telefone }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        3408,
+        624
+      ],
+      "id": "41c338ea-eb6f-4955-9f5f-576ab4f3113c",
+      "name": "Redis4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4bdf1a36-c8b7-484e-a789-08c245e3482a",
+              "name": "listaMensagens",
+              "value": "={{ $json.messages.map(valor => JSON.parse(valor).textMessage).join('\\n') }} ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3568,
+        624
+      ],
+      "id": "1245f224-8fbe-4ac4-ab80-1a2109a85151",
+      "name": "listaMensagens"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "nexus agent",
+        "limit": 1,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "condition": "eq",
+              "keyValue": "={{ $('Webhook').item.json.body.data.key.remoteJid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        464,
+        704
+      ],
+      "id": "bc349033-2f7f-4b71-8a69-4c3802534007",
+      "name": "Get many rows",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "tableId": "nexus agent",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "telefone",
+              "fieldValue": "={{ $('Webhook').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "fieldId": "chat_id",
+              "fieldValue": "={{ $json.data }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "I.A"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        912,
+        752
+      ],
+      "id": "f36b97a6-416e-4cbd-990a-d85470674391",
+      "name": "Create a row"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3600,
+        912
+      ],
+      "id": "cc26846a-ceab-4545-b0ef-e17cd14854b1",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Variáveis Globais').first().json.telefone }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        3728,
+        912
+      ],
+      "id": "0180b3b5-ecc5-4124-b461-7f985c1ccd2b",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        80
+      ],
+      "id": "37418ae6-3f3f-4568-a2c9-6cc52dc69a91",
+      "name": "Delete table or rows"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "https://setuppessoal-n8n.ovwcva.easypanel.host/mcp/8b71b42c-fe31-42fc-b4d5-c679250f349e/sse",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        3952,
+        912
+      ],
+      "id": "6394f3a3-247a-4571-9ab0-f68380722cc0",
+      "name": "MCP Google Calendar"
+    },
+    {
+      "parameters": {
+        "description": "Use a ferramenta para refletir sobre algo. Ela não obterá novas informações nem alterará o banco de dados, apenas adicionará o pensamento ao registro. Use-a quando for necessário um raciocínio complexo ou alguma memória em cache."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        912
+      ],
+      "id": "4423bac2-4afa-4811-8f98-efbfbe3b8b38",
+      "name": "Refletir"
+    },
+    {
+      "parameters": {
+        "path": "8b71b42c-fe31-42fc-b4d5-c679250f349e"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -112
+      ],
+      "id": "3b5f48fa-8b7d-4518-b7ae-4f06ee06a1a9",
+      "name": "[MCP Server] Google Calendar",
+      "webhookId": "8b71b42c-fe31-42fc-b4d5-c679250f349e"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "davi xavier testes"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "color": "4",
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}",
+          "visibility": "public"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        112
+      ],
+      "id": "8a7f8c0f-008c-49a4-9a7e-bc669a5e6a67",
+      "name": "Criar evento"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "davi xavier testes"
+        },
+        "eventId": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1200,
+        112
+      ],
+      "id": "dde1e759-0473-4bd2-8bdf-f17a6fea60f1",
+      "name": "Deletar evento"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "calendar": {
+          "__rl": true,
+          "value": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "davi xavier testes"
+        },
+        "eventId": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        592,
+        112
+      ],
+      "id": "554095e2-3240-492c-970e-820893b6a015",
+      "name": "Buscar evento"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Retorna eventos em uma período específico.\n\nAs datas devem obrigatoriamente informadas no formato completo.\n\nExemplo para buscar eventos no dia 01/01/2025\n\n- After: \"2025-01-01T00:00:00\"\n- Before: \"2025-01-01T23:59:59\"",
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "davi xavier testes"
+        },
+        "returnAll": true,
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        112
+      ],
+      "id": "c56d15d3-cbb9-453a-a38f-45535f39870a",
+      "name": "Buscar todos os eventos"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "davi xavier testes"
+        },
+        "eventId": "815ee7d2f1d02c35c256ff67ce43e3079c73996882b90835a91664a08e2c9c0d@group.calendar.google.com",
+        "updateFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+          "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        992,
+        112
+      ],
+      "id": "22927b29-85f7-4064-8879-71d9aafe5122",
+      "name": "Atualizar evento"
+    },
+    {
+      "parameters": {
+        "toolDescription": "chame essa tool toda vez que o cliente cancelar seu agendamento para enviar as informações para o dono do comércio sobre o cancelamento",
+        "method": "POST",
+        "url": "https://setuppessoal-n8n.ovwcva.easypanel.host/webhook/34e3fa2d-7398-432d-b092-7dc0e3922fbb",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "número do cliente",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "name": "=nome do individuo",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.pushName }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        4080,
+        912
+      ],
+      "id": "b3b8bb68-a20b-4604-b740-69d32a33c93a",
+      "name": "Enviar alerta de cancelamento"
+    },
+    {
+      "parameters": {
+        "toolDescription": "chame essa tool toda vez que haver um novo agendamento paa enviar as informações para o dono ",
+        "method": "POST",
+        "url": "https://setuppessoal-n8n.ovwcva.easypanel.host/webhook/a4dee01c-4733-4121-9a60-d55e766da590",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "Número do cliente",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "name": "Nome do cliente",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.pushName }}"
+            },
+            {
+              "name": "resumo da conversa toda do começo ao fim",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters2_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        4240,
+        912
+      ],
+      "id": "21851611-7e68-4c6f-b981-e898a302e2a1",
+      "name": "avisar_dono"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a4dee01c-4733-4121-9a60-d55e766da590",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        96
+      ],
+      "id": "29b1b391-8a2a-4b7e-838e-9676136c810d",
+      "name": "Webhook1",
+      "webhookId": "a4dee01c-4733-4121-9a60-d55e766da590"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use essa tool quando não conseguir resolver algo, sempre chame essa tool quando não conseguir prosseguir no atendimento, ela é feita para escalar a conversa para o humano assim que houver alguma complicância no atendimento, ou use ela quando estiver com problemas em você mesma\n",
+        "method": "POST",
+        "url": "https://setuppessoal-n8n.ovwcva.easypanel.host/webhook/6ca65558-23c3-49a9-8796-da81769a7305",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "número do cliente",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "name": "nome dele ",
+              "value": "={{ $('Mensagem recebida').item.json.body.data.pushName }}"
+            },
+            {
+              "name": "Qual problema estão enfrentando",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters2_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        4384,
+        912
+      ],
+      "id": "70fd5003-1c8d-426d-b598-41f84c655ee8",
+      "name": "escalar_humano"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "6ca65558-23c3-49a9-8796-da81769a7305",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        80
+      ],
+      "id": "ee6b6e5e-2e4c-42d9-ac72-2e5b45f470d3",
+      "name": "Webhook2",
+      "webhookId": "6ca65558-23c3-49a9-8796-da81769a7305"
+    },
+    {
+      "parameters": {
+        "content": "# Avisar ao dono após o agendamento",
+        "height": 300,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1920,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "46d10389-58b0-4be7-9564-6a7b76d4b4d4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Alerta de cancelamento para dono",
+        "height": 300,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1360,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "c2ae047e-9c51-41c1-8cc2-fd45f4cc80cf",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "use essa tool para buscar e consultar informações do petshop que você trabalha",
+        "tableName": {
+          "__rl": true,
+          "value": "documents_duplicate",
+          "mode": "list",
+          "cachedResultName": "documents_duplicate"
+        },
+        "topK": 100,
+        "useReranker": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        4496,
+        784
+      ],
+      "id": "b36415e3-ad14-4796-ac59-6faa94375c93",
+      "name": "Supabase Vector Store"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        4704,
+        928
+      ],
+      "id": "6d5a3feb-9fbc-4927-a75c-09fb69268b28",
+      "name": "Reranker Cohere"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        4560,
+        928
+      ],
+      "id": "03f1a7f9-1586-4bc4-b039-fb37fa102d39",
+      "name": "Embeddings OpenAI"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "davixavierteste",
+        "remoteJid": "558584658124",
+        "messageText": "=*SUPORTE PRIORITÁRIO*📌\n\n*Nome do cliente:* {{ $json.query['Nome do cliente'] }}\n\n*Telefone do cliente para contato:* {{(() => {\n  const full = $json.query['Número do cliente'];\n  return full.split('@')[0];\n})()}}\n\n\n*Resumo da conversa:* {{ $json.query['resumo da conversa toda do começo ao fim'] }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        80
+      ],
+      "id": "491fa9ff-1643-4a49-8671-f12b328dc17f",
+      "name": "Enviar texto1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "34e3fa2d-7398-432d-b092-7dc0e3922fbb",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -208
+      ],
+      "id": "641ada4e-d02f-4744-8e05-8aca4c6e00e1",
+      "name": "Webhook3",
+      "webhookId": "34e3fa2d-7398-432d-b092-7dc0e3922fbb"
+    },
+    {
+      "parameters": {
+        "content": "# Escalar humano",
+        "height": 240,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1360,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "7687a8b9-c390-4622-8b83-2b3a382e99bf",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Variáveis Globais').first().json['http-evo'] }}/message/sendText/{{ $('Variáveis Globais').first().json['instancia-evo'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Variáveis Globais').first().json['apikey-evo'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"number\": \"{{ $('Webhook').first().json[\"body\"][\"data\"][\"key\"][\"remoteJid\"] }}\",\n    \"text\": \"{{ $json.text.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '') }}\",\n    \"delay\": 2000\n}",
+        "options": {}
+      },
+      "id": "e6b1a36c-120d-4d37-a3f9-3da3fdcfbe88",
+      "name": "Responde texto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7168,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e142ba2c-0b2d-4d06-9c20-41164898d145",
+                    "leftValue": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"messageType\"] }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "84b6e91c-5e7c-4604-8609-f8a0e6fa8b01",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": ".wav,. mp3, .mov, .mkv, .pdf, .jpeg, .jpg, .png, .webp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.text.match(/https:\\/\\/.*\\.(jpeg|jpg|png|webp)/g) != null }}",
+                    "rightValue": "https",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "d35f0f03-360e-47e9-a72b-9749a4323ded"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7e5907c4-8b5b-4803-b269-3c1453efee15",
+                    "leftValue": "={{ $json.text.match(/https:\\/\\/.*\\.(pdf)/g) != null }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "220dfbb2-989f-466f-978c-8a5d76410ddb",
+                    "leftValue": "={{ $json.text.match(/https:\\/\\/.*\\.(wav|mp3|mov|mkv)/g) != null }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9bcc03c5-bd14-4f04-87da-7399fbb889f2",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        5520,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Variáveis Globais').first().json['http-evo'] }}/message/sendMedia/{{ $('Variáveis Globais').first().json['instancia-evo'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Variáveis Globais').first().json['apikey-evo'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\n{\n    \"number\": \"{{ $('Webhook').first().json[\"body\"][\"data\"][\"key\"][\"remoteJid\"] }}\",\n    \"mediatype\": \"image\",\n    \"mimetype\": \"image/png\",\n    \"caption\": \"Aqui vai um *antes e depois* para você ver, e já me fala se gostou ou não do resultado, o *próximo* pode ser você!\",\n    \"media\": \"{{ $('AllOdonto').first().json.output }}\",\n    \"fileName\": \"Imagem.png\"\n}",
+        "options": {}
+      },
+      "id": "642e8475-c472-4dee-8bb7-12368fa497ad",
+      "name": "Responde imagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7168,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Variáveis Globais').first().json['http-evo'] }}/message/sendMedia/{{ $('Variáveis Globais').first().json['instancia-evo'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Variáveis Globais').first().json['apikey-evo'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"number\": \"{{ $('Webhook').first().json[\"body\"][\"data\"][\"key\"][\"remoteJid\"] }}\",\n    \"mediatype\": \"document\",\n    \"mimetype\": \"document/pdf\",\n      \"caption\": \"Aqui está as informações do imóvel, ai está tudo o que você precisa saber, se precisar de mais informações, pode me chamar, ok?\",\n    \"media\": \"{{ $('AllOdonto').first().json.output }}\",\n    \"fileName\": \"imóvelcliente.pdf\"\n}",
+        "options": {}
+      },
+      "id": "1294b5f0-f52d-4687-b904-67d7cc09a42e",
+      "name": "Responde pdf",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7168,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Variáveis Globais').first().json['http-evo'] }}/message/sendMedia/{{ $('Variáveis Globais').first().json['instancia-evo'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Variáveis Globais').first().json['apikey-evo'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"number\": \"{{ $('Webhook').first().json[\"body\"][\"data\"][\"key\"][\"remoteJid\"] }}\",\n    \"mediatype\": \"video\",\n    \"mimetype\": \"video/mp4\",\n    \"caption\": \"Vídeo de Introdução\",\n    \"media\": \"{{ $('AllOdonto').first().json.output }}\",\n    \"fileName\": \"video.mp4\"\n}",
+        "options": {}
+      },
+      "id": "79ab6956-b161-4363-b000-5d60d2acc7e7",
+      "name": "Responde vídeo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7168,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0d375ba9-ddec-45b5-b2df-13a818993157",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        5136,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "368fec32-2fd3-412b-812e-4d51925b0fee",
+      "name": "Wait1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5280,
+        992
+      ],
+      "webhookId": "46162e32-3ebd-48c2-a6a6-b5c2620193ab"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        5488,
+        1376
+      ],
+      "id": "faecb7d0-e9ea-401c-97d9-6dd2f61130f6",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Variáveis Globais').first().json['http-evo'] }}/message/sendMedia/{{ $('Variáveis Globais').first().json['instancia-evo'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Variáveis Globais').first().json['apikey-evo'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\n{\n    \"number\": \"{{ $('Webhook').first().json[\"body\"][\"data\"][\"key\"][\"remoteJid\"] }}\",\n    \"mediatype\": \"audio\",\n    \"mimetype\": \"audio/mpeg\",\n    \"caption\": \"\",\n    \"media\": \"{{$json.data}}\",\n    \"fileName\": \"audio.mp3\"\n}",
+        "options": {}
+      },
+      "id": "59d2d7e5-f235-42e1-ac6b-f2e4b063b661",
+      "name": "Responde audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5632,
+        1376
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5136,
+        560
+      ],
+      "id": "ee11972e-d447-4c99-99a0-f07cff50d8db",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $json.text.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '') }}",
+        "voice": "nova",
+        "options": {
+          "speed": 0.8
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        5312,
+        1376
+      ],
+      "id": "2d9dd8f9-10f3-4285-9aaa-233557027a6f",
+      "name": "Generate audio"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3f063a65-24f9-4935-9cbe-56768a01b20b",
+              "leftValue": "={{ $json.text ? (\n  $json.text.toLowerCase().includes('.pdf') || \n  $json.text.toLowerCase().includes('.doc') || \n  $json.text.toLowerCase().includes('.docx')\n) : false }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6128,
+        352
+      ],
+      "id": "afe4eca8-9a48-49d3-805e-7bf6685fdd88",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "davixavierteste",
+        "remoteJid": "558584658124",
+        "messageText": "=*AVISO PRÉVIO DE CANCELAMENTO*📌\n\n*Nome do cliente:* {{ $json.query['nome do individuo'] }}\n\n*Telefone do cliente para contato:* {{(() => {\n  const full = $json.query['número do cliente']; // Ex: 558587962597@s.whatsapp.net\n  return full.split('@')[0]; // Remove o domínio, deixando só o número\n})()}}\n",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1696,
+        -208
+      ],
+      "id": "40b942d1-a137-4699-b6ed-ea69f7398981",
+      "name": "Enviar texto"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "davixavierteste",
+        "remoteJid": "558584658124",
+        "messageText": "=*NOVO AGENDAMENTO*📌\n\n*Nome do cliente:* {{ $json.query['Nome do cliente'] }}\n\n*Telefone do cliente para contato:* {{(() => {\n  const full = $json.query['Número do cliente'];\n  return full.split('@')[0];\n})()}}\n\n\n*Resumo da conversa:* {{ $json.query['resumo da conversa toda do começo ao fim'] }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        96
+      ],
+      "id": "f4cbf233-70a5-4901-b769-5a497e78a8e6",
+      "name": "Enviar texto2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.listaMensagens.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '')}}",
+        "options": {
+          "systemMessage": "=HOJE É: {{ $now.format('FFFF') }}\n\n# INSTRUÇÃO IMPORTANTE\nAo criar ou editar qualquer evento no Google Calendar, incluir sempre o telefone do cliente na descrição do agendamento, juntamente com o nome completo, o imóvel de interesse e o nome do corretor escolhido.\n\n## PAPEL\nVocê é o **Assistente Virtual da Xavier Imóveis**, um especialista em imóveis de alto padrão em Fortaleza atendendo clientes pelo WhatsApp. Sua missão é fornecer informações claras e precisas sobre os imóveis disponíveis, com agilidade e profissionalismo, e facilitar o agendamento de visitas.\n\n## PERSONALIDADE E TOM DE VOZ\n- Profissional, prestativo e confiável.\n- Tom sempre claro, objetivo e cordial.\n- Linguagem direta e eficiente, focada em ajudar o cliente a encontrar o imóvel ideal.\n\n## OBJETIVO\n- Fornecer um atendimento de alta qualidade que reflita a confiança da imobiliária.\n- Apresentar informações dos imóveis de forma estratégica para despertar o interesse do cliente.\n- Agendar visitas com os corretores disponíveis.\n- Garantir que todos os dados do agendamento sejam registrados corretamente.\n\n## CONTEXTO\nVocê é a linha de frente digital da Xavier Imóveis, responsável pelo primeiro contato com potenciais clientes. Sua eficiência em fornecer informações e agendar visitas é crucial para o fechamento de negócios e para a satisfação do cliente.\n\n## SOP (Procedimento Operacional Padrão)\n\n### Acolhimento inicial\n- Cumprimente o cliente de forma profissional e cordial.\n- Coloque-se à disposição para ajudar a encontrar informações sobre os imóveis ou agendar uma visita.\n\n❌ **Nunca inicie pedindo dados pessoais.** Espere o cliente solicitar informações ou demonstrar interesse em agendar uma visita.\n\n### IMÓVEIS DISPONÍVEIS E LINKS DOS DOCUMENTOS\n\nQuando o cliente solicitar informações **específicas** sobre os imóveis abaixo, envie APENAS o link correspondente, sem textos adicionais:\n\n- **Apartamento na Aldeota José Mansur**: https://eynifdmidipyhvdwmfes.supabase.co/storage/v1/object/sign/imobiliaria/Apartamento%20na%20Aldeota.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zNDVhMWQzNS1lMTk2LTQ1OTctYjJlYi00OGFkYWJjMjg3ZTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbW9iaWxpYXJpYS9BcGFydGFtZW50byBuYSBBbGRlb3RhLnBkZiIsImlhdCI6MTc2MDU2ODUyOCwiZXhwIjoxNzkyMTA0NTI4fQ.qezDvK2juwp_N_beChOFPbEuuqcmYu4ubg9PEG7ZWnk\n\n- **Beira Mar Marinho Sêneca**: https://eynifdmidipyhvdwmfes.supabase.co/storage/v1/object/sign/pdf's%20imobiliaria/Beira%20Mar%20Marinho%20Seneca%20%20(1).pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zNDVhMWQzNS1lMTk2LTQ1OTctYjJlYi00OGFkYWJjMjg3ZTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwZGYncyBpbW9iaWxpYXJpYS9CZWlyYSBNYXIgTWFyaW5obyBTZW5lY2EgICgxKS5wZGYiLCJpYXQiOjE3NjA5NjIyOTQsImV4cCI6MjM5MTY4MjI5NH0.zsPENno_uncM97GDQ6TPCpDuZaHoa_wUgCkx8aPzYxk\n\n- **Apartamento no Meireles José Walter**: https://eynifdmidipyhvdwmfes.supabase.co/storage/v1/object/sign/imobiliaria/Apartamento%20no%20Meireles%20Jose%20Walter.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zNDVhMWQzNS1lMTk2LTQ1OTctYjJlYi00OGFkYWJjMjg3ZTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbW9iaWxpYXJpYS9BcGFydGFtZW50byBubyBNZWlyZWxlcyBKb3NlIFdhbHRlci5wZGYiLCJpYXQiOjE3NjA1Njg3MDAsImV4cCI6MTc5MjEwNDcwMH0.VybB4bkRyx_VMR0KUbHe7RK7yTi8t5nLgwzNNy1D2cw\n\n### Fluxo de Atendimento\n\n#### 1. Cliente busca informações gerais ou sugestões\n- Se o cliente perguntar \"quais imóveis vocês têm?\", \"me sugira alguns apartamentos\", \"o que tem disponível?\", etc.\n- **Busque na sua base de conhecimento** e apresente **APENAS os nomes** dos imóveis disponíveis que se encaixam no perfil solicitado.\n- Exemplo: *\"Temos disponíveis: Apartamento na Aldeota José Mansur, Beira Mar Marinho Sêneca e Apartamento no Meireles José Walter. Sobre qual deles você gostaria de saber mais?\"*\n\n#### 2. Cliente solicita informações sobre um imóvel específico\n- O cliente pergunta sobre um imóvel específico da lista.\n- Você identifica o imóvel na lista acima.\n- Você responde **APENAS** com o link do documento correspondente, sem nenhum texto adicional.\n\n#### 3. Após enviar o link\n- **Sempre** que você enviar um link de imóvel, aguarde a reação do cliente.\n- Se o cliente demonstrar interesse, pergunte: *\"Gostaria de agendar uma visita para conhecer o imóvel pessoalmente?\"*\n\n#### 4. Responder dúvidas sobre características dos imóveis\n- Se o cliente fizer perguntas sobre características gerais (localização, preço, número de quartos, etc.) **antes de pedir o documento completo**, forneça as informações disponíveis na sua base de conhecimento de forma clara e objetiva.\n- Após responder, pergunte se ele gostaria de receber o material completo do imóvel.\n\n#### 5. Processo de Agendamento de Visita\n- Se o cliente disser \"sim\", pergunte com qual corretor ele gostaria de realizar a visita: *\"Ótimo! Com qual de nossos corretores você gostaria de agendar: Carla Santos, Roberto Lima ou Fernanda Costa?\"*\n- Após a escolha do corretor, solicite os dados necessários:\n  - Nome completo\n  - Telefone para contato (confirme o número recebido)\n  - Imóvel de interesse\n  - Melhor dia e horário para a visita\n\n#### 6. Verificar disponibilidade e Agendar\n- Use a ferramenta **Buscar_todos_os_eventos** para verificar a agenda do corretor escolhido na data informada.\n- Retorne com os horários disponíveis.\n- Após o cliente confirmar o horário, use a ferramenta **Criar_evento**, incluindo:\n  - Título: \"Visita [Nome do Imóvel] - [Nome do Cliente]\"\n  - Descrição: \"Cliente: [Nome Completo], Telefone: [Telefone do Cliente], Imóvel: [Imóvel de Interesse], Corretor: [Nome do Corretor Escolhido].\"\n  - Data e horário do agendamento.\n\n⚠️ **Nunca agende em datas passadas ou em horários já ocupados.**\n\n#### 7. Confirmar com o cliente\n- Aguarde o sucesso da ferramenta antes de confirmar o agendamento.\n- Após o sucesso, diga: *\"Visita confirmada com sucesso com o(a) corretor(a) [Nome do Corretor]! Esperamos por você no dia X, às Yh. Qualquer dúvida, estou à disposição.\"*\n\n## INSTRUÇÕES GERAIS\n\n### Respostas sempre claras\n- Esclareça dúvidas sobre: características dos imóveis, valores, formas de pagamento, documentação necessária, financiamento.\n\n### Caso o cliente toque em assuntos fora do escopo:\n- Use a ferramenta **Escalar_humano**.\n- Diga: *\"Para este assunto, preciso que você fale diretamente com um de nossos corretores especialistas. Já direcionei sua conversa. Se preferir, pode ligar para (85) 3456-7890.\"*\n\n## Nunca:\n❌ Confirmar um agendamento sem o retorno de sucesso da ferramenta.\n❌ Usar linguagem excessivamente informal.\n❌ Pedir dados pessoais antes do cliente demonstrar interesse claro em agendar.\n❌ Agendar sem todas as informações necessárias (nome, telefone, imóvel, corretor).\n❌ Enviar textos junto com os links dos imóveis quando o cliente pedir informações específicas.\n❌ Enviar links de imóveis quando o cliente só quer sugestões (envie apenas os nomes).\n\n## INFORMAÇÕES DA IMOBILIÁRIA\n\n### Horário de Atendimento\n- **Segunda a Sexta:** 08h às 18h\n- **Sábado:** 09h às 13h\n- **Domingo:** Fechado\n\n### Contato\n- **Endereço:** Av. Desembargador Moreira, 2200 - Aldeota, Fortaleza - CE\n- **Telefone:** (85) 3456-7890\n- **WhatsApp:** (85) 98765-4321\n- **Instagram:** @xavierimoveis\n- **E-mail:** contato@xavierimoveis.com.br\n\n### Corretores\n- Carla Santos\n- Roberto Lima\n- Fernanda Costa\n\n### Agenda Google (IDs fictícios - ajuste para sua realidade)\n**NÃO ESQUEÇA: o ID da agenda contém @group.calendar.google.com**\n\n- **Agenda Carla Santos:** `c_carla123...@group.calendar.google.com`\n- **Agenda Roberto Lima:** `c_roberto456...@group.calendar.google.com`\n- **Agenda Fernanda Costa:** `c_fernanda789...@group.calendar.google.com`\n\n## FERRAMENTAS\n\n### ✅ Google Calendar\n- **Criar_evento**, **Atualizar_evento**, **Buscar_evento**, **Buscar_todos_os_eventos**, **Deletar_evento**\n- Sempre incluir: Nome completo do cliente, telefone, imóvel de interesse e nome do corretor.\n\n### ✅ Escalar_humano\n- Use para problemas complexos, clientes insatisfeitos ou assuntos fora do escopo.\n\n### ✅ Enviar_alerta_de_cancelamento\n- Use após um cliente cancelar uma visita agendada.\n\n### ✅ avisar_dono\n- Use para notificar o corretor sobre uma nova visita agendada em sua agenda assim que houver a confirmação de um agendamento, sempre que houver a confirmação, acione a tool imediatamente\n\n### ✅ Reagir_mensagem\n- Para interações simples e confirmações rápidas. Ex: Cliente: \"Obrigado!\" -> Você: 👍\n\n---\n\n*Lembre-se: você é a porta de entrada da **Xavier Imóveis**. Mantenha sempre o profissionalismo, a clareza e a eficiência que os clientes esperam.*"
+        }
+      },
+      "id": "3398bc76-8f29-45f3-92cb-80434b13ae4f",
+      "name": "AllOdonto",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        3904,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data || $json.text || $json.concatenated_data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "=file_id",
+                "value": "={{ $('Set File ID').first().json.file_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "9a9986d8-5489-4807-974d-27e5154b5adc",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        4464,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "7befca44-d56f-4cad-a4f6-e008d70e3104",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3424,
+        -192
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10646eae-ae46-4327-a4dc-9987c2d76173",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "f4536df5-d0b1-4392-bf17-b8137fb31a44",
+              "name": "file_type",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "c774ed34-0d67-44b7-a537-83810f357b7c",
+              "name": "originalFilename",
+              "value": "={{ $json.originalFilename }}",
+              "type": "string"
+            },
+            {
+              "id": "dff39c85-b4a2-45ba-a5ff-f4b311999efc",
+              "name": "sha1Checksum",
+              "value": "={{ $json.sha1Checksum }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8d00d119-64fc-4c1b-973b-c3ad57764df2",
+      "name": "Set File ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2720,
+        -208
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "17d1980e-18f1-4999-8c7b-256bdc227fe5",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        4160,
+        -192
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d94b318c-faf8-468b-a6ed-b992902f9c68",
+      "name": "Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        4544,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "85f135fa-bf8b-4e7a-91a5-4df5c68e80c8",
+      "name": "Summarize",
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1,
+      "position": [
+        4304,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return $items(\"Set File ID\").map(item => {\n  return {\n    json: {\n      file_id: item.json.file_id,\n      file_type: item.json.file_type\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        -208
+      ],
+      "id": "ba30c71f-8621-40c7-ae74-6078f77b0623",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "8bf77ab5-358d-4b10-b8a1-aac197db161b",
+      "name": "Insert into Supabase Vectorstore",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        4416,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "documents",
+        "filterType": "string",
+        "filterString": "=metadata->>file_id=like.*{{ $json.file_id }}*"
+      },
+      "id": "a2068bce-28b1-4f0f-a51d-484d418006e1",
+      "name": "Linhas antigas",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        -208
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 9
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1eEJge65ah7tzGGswgNhqj6PnDoQ4kqSo",
+          "mode": "list",
+          "cachedResultName": "imoveis fortal BM",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1eEJge65ah7tzGGswgNhqj6PnDoQ4kqSo"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "id": "d049bcb4-52e8-43d0-bd6f-e850b886a2db",
+      "name": "Drive Folder",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        -208
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "c45c3576-d3de-4b9a-a214-93f88a2a0b99",
+      "name": "Semântica ",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        4336,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "9f96bf0c-28eb-4ae1-b96a-42a6aa0aff87",
+      "name": "Convert to PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "a3331ea6-feb8-4bf9-b969-00001452cb74",
+      "name": "Convert to XLSX",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "b837e167-b000-46db-8b58-6daedc9c19f1",
+      "name": "text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        16
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.file_type }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "2ae7faa7-a936-4621-a680-60c512163034",
+                    "leftValue": "={{ $json.file_type }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "fc193b06-363b-4699-a97d-e5a850138b0e",
+                    "leftValue": "={{ $json.file_type }}",
+                    "rightValue": "application/vnd.google-apps.document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 2
+        }
+      },
+      "id": "571fd9f3-66e7-4220-be4c-b9a3b173d47d",
+      "name": "Switch3",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        3600,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3200,
+        -208
+      ],
+      "id": "f5f367e5-27e4-4d36-8e74-bcea9f53d779",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Criar tabela \"nexus agent\" no Supabase\nCREATE TABLE \"nexus agent\" (\n    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,\n    telefone TEXT,\n    nome TEXT,\n    status_de_ia TEXT,\n    agente_responsavel TEXT,\n    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),\n    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()\n);\n\n-- Adicionar comentários para documentação\nCOMMENT ON TABLE \"nexus agent\" IS 'Tabela para armazenar informações dos agentes Nexus';\nCOMMENT ON COLUMN \"nexus agent\".id IS 'ID único do agente (auto incrementado)';\nCOMMENT ON COLUMN \"nexus agent\".telefone IS 'Número de telefone do agente';\nCOMMENT ON COLUMN \"nexus agent\".nome IS 'Nome do agente';\nCOMMENT ON COLUMN \"nexus agent\".status_de_ia IS 'Status atual da IA do agente';\nCOMMENT ON COLUMN \"nexus agent\".agente_responsavel IS 'Agente responsável pelo caso';\n\n-- Opcional: Criar índices para melhor performance\nCREATE INDEX idx_nexus_agent_telefone ON \"nexus agent\" (telefone);\nCREATE INDEX idx_nexus_agent_status ON \"nexus agent\" (status_de_ia);\n\n-- Opcional: Habilitar RLS (Row Level Security) se necessário\nALTER TABLE \"nexus agent\" ENABLE ROW LEVEL SECURITY;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "0cb49eae-c0d1-425b-857c-86c7afb0ea0a",
+      "name": "Create Table \"Nexus Agent\""
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "separa o base1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Variáveis Globais": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Variáveis Globais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Envia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "separa o base1": {
+      "main": [
+        [
+          {
+            "node": "Converte documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converte documento": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "separa o telefone e texto3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "separa o telefone e texto3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia": {
+      "main": [
+        [
+          {
+            "node": "Buscar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Buscar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis4": {
+      "main": [
+        [
+          {
+            "node": "listaMensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listaMensagens": {
+      "main": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "[MCP Server] Google Calendar",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deletar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "[MCP Server] Google Calendar",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "[MCP Server] Google Calendar",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar todos os eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "[MCP Server] Google Calendar",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "[MCP Server] Google Calendar",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook3": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refletir": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta de cancelamento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "avisar_dono": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "escalar_humano": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AllOdonto",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responde texto": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Generate audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responde imagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responde pdf",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responde vídeo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responde imagem": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responde pdf": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responde vídeo": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Responde audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responde audio": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate audio": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Responde pdf",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responde texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AllOdonto": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File ID": {
+      "main": [
+        [
+          {
+            "node": "Linhas antigas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into Supabase Vectorstore": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Linhas antigas": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive Folder": {
+      "main": [
+        [
+          {
+            "node": "Set File ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Semântica ": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to PDF": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to XLSX": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Convert to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert to XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "43034326-e580-4658-86b8-6e5393aa0cab",
+  "meta": {
+    "instanceId": "32b8deda9210608c7a7751591224c71434f835b30c8b9ce6fc9cf2f83f3dc2f1"
+  },
+  "id": "pY0vXZ0lAiAvzzMw",
+  "tags": []
+}

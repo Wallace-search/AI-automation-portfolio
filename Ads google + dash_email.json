@@ -1,0 +1,416 @@
+{
+  "name": "Ads google + dash/email",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "303a3d63-341c-480f-9d39-c01404be1d23",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "propertyId": {
+          "__rl": true,
+          "value": "={{ $('Loop Projetos').item.json['ID GA4'] }}",
+          "mode": "id"
+        },
+        "dateRange": "last30days",
+        "metricsGA4": {
+          "metricValues": [
+            {
+              "listName": "active1DayUsers"
+            }
+          ]
+        },
+        "dimensionsGA4": {
+          "dimensionValues": [
+            {}
+          ]
+        },
+        "additionalFields": {
+          "orderByUI": {
+            "dimmensionOrderBy": [
+              {
+                "desc": true,
+                "dimensionName": "date",
+                "orderType": "NUMERIC"
+              }
+            ]
+          }
+        }
+      },
+      "id": "212d3831-36c1-49e3-a259-bc0a921b89a8",
+      "name": "Google Analytics",
+      "type": "n8n-nodes-base.googleAnalytics",
+      "typeVersion": 2,
+      "position": [
+        176,
+        592
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "53b4c079-406b-4e77-825b-3f476438919a",
+      "name": "Loop Projetos",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -32,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "9bcf30d2-2422-4cba-827a-2816afc9ecec",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        512,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "id": "5a954ab6-9196-465c-ae2d-4204d793ffce",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        832
+      ],
+      "webhookId": "c7090f57-a58d-4a0a-8497-70d55452ca91"
+    },
+    {
+      "parameters": {
+        "fromEmail": "Notificação Automática <seu@email.com>",
+        "toEmail": "={{ $('Loop Projetos').item.json[\"E-mail do projeto\"] }}",
+        "subject": "=[BR Criativus] Olá {{ $('Loop Projetos').item.json.Nome }}, aqui está seu relatório semanal 🔥",
+        "html": "={{ $json.data }}",
+        "options": {
+          "appendAttribution": false,
+          "ccEmail": "seu@email.com",
+          "replyTo": "seu@email.com"
+        }
+      },
+      "id": "f522aa02-17df-489b-9a64-f1e56ef840bc",
+      "name": "E-mail (Cliente)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1312,
+        576
+      ],
+      "webhookId": "809aec76-73ce-4c05-b705-e95eaaa4681d"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                3,
+                5
+              ],
+              "triggerAtHour": 17
+            }
+          ]
+        }
+      },
+      "id": "cde4a7a4-a736-4097-af2a-0f51b8ee0028",
+      "name": "CRON",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "c106ed80-aaa8-49db-81f1-77382a3b5ff7",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        864,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4705ed77-0a23-40f1-80c0-13b17a54a15e",
+              "leftValue": "={{ $json.date }}",
+              "rightValue": "={{ $now.format('yyyyMMdd') }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "af490bae-d23e-4f47-8243-e6bbb64f9d5d",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        336,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "chartType": "line",
+        "labelsMode": "array",
+        "labelsArray": "={{ $('Aggregate').item.json.data.toReversed().map(item => item.date.toDateTime().format(\"dd/MM/yyyy\")) }}",
+        "data": "={{ $('Aggregate').item.json.data.toReversed().map(item => item.active1DayUsers) }}",
+        "chartOptions": {},
+        "datasetOptions": {
+          "backgroundColor": "#0001ff1c",
+          "borderColor": "#0001ff",
+          "label": "Usuários"
+        }
+      },
+      "id": "21fa5aad-ed9c-4657-9464-8b1f5d10dc32",
+      "name": "QuickChart",
+      "type": "n8n-nodes-base.quickChart",
+      "typeVersion": 1,
+      "position": [
+        704,
+        592
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2806db11-45b0-4986-8b3f-be5b5d3dc357",
+      "name": "TextManipulation",
+      "type": "n8n-nodes-text-manipulation.textManipulation",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        592
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        368
+      ],
+      "id": "9fad20d9-9ce9-40b6-8bb7-724516a8f704",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "url": "https://URL_DO_TEMPLATE",
+        "options": {}
+      },
+      "id": "9507651a-5c12-4c6f-824f-6e45e581dc89",
+      "name": "Template E-mail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1040,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "projectId": "pz242559ja5i2ap",
+        "table": "mo1idgzrjgzxvsi",
+        "returnAll": true,
+        "options": {
+          "fields": [
+            "Id,UUID,Nome,E-mail do projeto,Site,ID GA4"
+          ],
+          "where": "(ID GA4,isnot,null)"
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        -208,
+        576
+      ],
+      "id": "ee0747e8-c869-4230-9d08-175ad260f55b",
+      "name": "NocoDB"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Analytics": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Projetos": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "QuickChart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-mail (Cliente)": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRON": {
+      "main": [
+        [
+          {
+            "node": "NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Template E-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QuickChart": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Projetos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Loop Projetos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c9383a85-5b05-4c67-a0af-d3855c649455",
+  "meta": {
+    "instanceId": "32b8deda9210608c7a7751591224c71434f835b30c8b9ce6fc9cf2f83f3dc2f1"
+  },
+  "id": "v5T5JxFQFhy0lxrN",
+  "tags": []
+}

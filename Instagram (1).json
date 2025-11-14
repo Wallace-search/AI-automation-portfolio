@@ -1,0 +1,703 @@
+{
+  "name": "Instagram",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "InstagramPGR",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        -96
+      ],
+      "id": "dc844084-21b4-4980-bd80-e812748bb793",
+      "name": "Webhook",
+      "webhookId": "34f3ada2-8ab7-439c-b78d-bac3f9c6dc30",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e89cb50-1eb1-4fb0-a968-be139825b97f",
+              "name": "cha",
+              "value": "={{ $json.query['hub.challenge'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        -96
+      ],
+      "id": "e2a0cf52-158c-4102-b898-1b43a223c105",
+      "name": "Edit Fields",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.cha }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        -96
+      ],
+      "id": "343779d0-1cbd-486b-8090-09d848fb6505",
+      "name": "Respond to Webhook",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "385f1327-e640-4ec9-8b20-6ee8d6858841",
+              "name": "meu_id",
+              "value": "={{ $json.body.entry[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "a9fe4b33-49fc-4857-8a0a-afe29f706b7b",
+              "name": "quem_mandou",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            },
+            {
+              "id": "12cc0835-f167-43c3-8937-902affc089e9",
+              "name": "mensagem",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "62e1c61b-8f22-4d4c-a8c2-ceaecf46a320",
+              "name": "msgcomentario",
+              "value": "={{ $json.body.entry[0].changes[0].value.text }}",
+              "type": "string"
+            },
+            {
+              "id": "da6fc84b-5b3a-4745-ab79-cdbb94b0292f",
+              "name": "field",
+              "value": "={{ $json.body.entry[0].changes[0].field }}",
+              "type": "string"
+            },
+            {
+              "id": "4d3cc7f1-800e-451a-9d32-ac8202238285",
+              "name": "deondeveio",
+              "value": "={{ $json.body.entry[0].changes[0].value.media.media_product_type }}",
+              "type": "string"
+            },
+            {
+              "id": "bf847e69-b3b5-415e-b6ca-e89d75e8aa71",
+              "name": "user_comment",
+              "value": "={{ $json.body.entry[0].changes[0].value.from.username }}",
+              "type": "string"
+            },
+            {
+              "id": "f815f42d-cab2-4ac7-a1b5-bd19b01a01d5",
+              "name": "quem_mandoufrom",
+              "value": "={{ $json.body.entry[0].changes[0].value.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "9cf62417-61d4-4a1d-aaa8-30edb26fba5d",
+              "name": "media_id",
+              "value": "={{ $json.body.entry[0].changes[0].value.media.id }}",
+              "type": "string"
+            },
+            {
+              "id": "e2e650ff-5aae-4292-865a-215592e3936b",
+              "name": "comment_id",
+              "value": "={{ $json.body.entry[0].changes[0].value.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c3281533-2919-44cc-afbb-87dc9f2bb277",
+              "name": "mid",
+              "value": "={{ $json.body.entry[0].messaging[0].message.mid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        96
+      ],
+      "id": "474cc073-df7a-4034-8f71-082191a8b485",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6574a39c-3298-4da8-8f25-e6cab129bce5",
+              "leftValue": "={{ $json.quem_mandoufrom }}",
+              "rightValue": "={{ $json.meu_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        80
+      ],
+      "id": "52b19240-ad6f-4a32-bc14-086884f4b5c2",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/{{ $json.comment_id }}/replies",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer IGAAQZAHx7pZCy9BZAE0zdUhJaEctTGd1dFdxWVRxd3JLMDd0eG12U0ZAsOGN3M3d5Nkx0bzc5WWRxMlVqdDZALbVBfOUxGb2Q4d2twLTZACNEpUNEFmbFZAxM0dTSGE0U0hqYUt1M1NYdWYxVEgwc0UwNHpiN0dYQ1F2RFZAvbW0tR19kYwZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "Olá! Dá uma olhadinha na sua DM, acabei de te enviar uma mensagem com mais detalhes sobre o Método PGR."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1728,
+        80
+      ],
+      "id": "d44abdbb-0b87-4c53-888b-261e9ea0cd02",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/me/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer IGAAQZAHx7pZCy9BZAFBnRlJxYms5YUxLaXZA4R0ZAoWkM4eVhaeV9pVkJKV3BYdzlTSzQ0bTNxMUlzYTIxU2VZAdEpwOHR6SHMzVDVPWTlvTnowaUJ1Sk9jX2NNdkswb09GMmx4S1RRN2t6Q1NlMmo5V1JpYkJoVGpHMlZALVHdNUXBXUQZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient.comment_id",
+              "value": "={{ $('Edit Fields1').item.json.comment_id }}"
+            },
+            {
+              "name": "message.text",
+              "value": "=Olá inconformado! Que bom ter você por aqui. Entre agora no grupo oficial do método PGR e tenha acesso a conteúdos exclusivos. \n\nhttps://chat.whatsapp.com/LE02iHQGIpt9HC2HeI02Sd?mode=ems_copy_c"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        80
+      ],
+      "id": "9842f8fc-41bb-4d22-8523-be96e1092bcc",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.field }}",
+                    "rightValue": "comments",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3e7155a6-e3ce-4102-9386-a6882609e8b0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "comments"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1088,
+        80
+      ],
+      "id": "7fbea4a4-7bf6-4117-8906-6aae54d94bf9",
+      "name": "Switch1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "f94388df-b86a-4889-81ff-82129fd55bb4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "dm"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8bb2f02f-9bb7-457c-83b3-43d5c57908c0",
+                    "leftValue": "={{ $json.msgcomentario }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "comentario"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        336,
+        80
+      ],
+      "id": "ad10e20c-76b0-4f55-8694-2cb441089246",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "679b1556-e5e7-407b-8429-9d31ede082b2",
+              "leftValue": "={{ $json.mensagem.toLowerCase() }}",
+              "rightValue": "pgr",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -112
+      ],
+      "id": "e2cbffbe-5936-43ec-9a53-47fefff86e51",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "InstagramPGR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        96
+      ],
+      "id": "4ee2116b-b1e5-481e-90bd-ac7dfc116ef6",
+      "name": "Webhook1",
+      "webhookId": "34f3ada2-8ab7-439c-b78d-bac3f9c6dc30"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cca65aad-e734-497e-b30b-30e8c8822d1b",
+              "leftValue": "={{ $json.msgcomentario.toLowerCase() }}",
+              "rightValue": "pgr",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        96
+      ],
+      "id": "6d97fe3b-2ac5-4a0e-92aa-b29ef182db4d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/me/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer IGAAQZAHx7pZCy9BZAFBnRlJxYms5YUxLaXZA4R0ZAoWkM4eVhaeV9pVkJKV3BYdzlTSzQ0bTNxMUlzYTIxU2VZAdEpwOHR6SHMzVDVPWTlvTnowaUJ1Sk9jX2NNdkswb09GMmx4S1RRN2t6Q1NlMmo5V1JpYkJoVGpHMlZALVHdNUXBXUQZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "recipient.id",
+              "value": "={{ $json.quem_mandou }}"
+            },
+            {
+              "name": "message.text",
+              "value": "=Olá inconformado! Que bom ter você por aqui. Entre agora no grupo oficial do método PGR e tenha acesso a conteúdos exclusivos. \n\nhttps://chat.whatsapp.com/LE02iHQGIpt9HC2HeI02Sd?mode=ems_copy_c"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1232,
+        -128
+      ],
+      "id": "54ee1648-9750-4e49-b955-7fe00e684336",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        944,
+        -144
+      ],
+      "id": "60619aa0-b894-4422-a686-a5e171dd9a54",
+      "name": "Wait",
+      "webhookId": "39dfa5d4-c2f2-4791-b114-1dc53714416b"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1520,
+        80
+      ],
+      "id": "c9be8cfa-a9c4-439a-9ab5-3748bafd0e39",
+      "name": "Wait1",
+      "webhookId": "fec65da4-d536-46dc-855d-d253ebdcdace"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1936,
+        80
+      ],
+      "id": "1608e25b-7fda-4658-8b5d-502e8fe5a29a",
+      "name": "Wait2",
+      "webhookId": "6a8388c3-697c-46a8-808c-33e81aaceec2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        928,
+        240
+      ],
+      "id": "0c98193c-e9ea-4aed-8e9e-02f9fbe2186a",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c18d422c-f4af-476b-a80c-cb298a913098",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32b8deda9210608c7a7751591224c71434f835b30c8b9ce6fc9cf2f83f3dc2f1"
+  },
+  "id": "f8zcGpwrIgYvOL27",
+  "tags": []
+}

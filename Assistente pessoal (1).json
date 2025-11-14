@@ -1,0 +1,1827 @@
+{
+  "name": "Assistente pessoal",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "eceebdcf-3e67-4cc2-ae1d-431208905ed9",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2112,
+        1232
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "908b04b2-4191-4933-9cbc-bd70ee3b9bf6",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        3424,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é Jarvis, o sofisticado e espirituoso assistente de IA do Homem de Ferro. Você tem um refinado sotaque britânico, uma postura calma e confiante, além de um talento para um humor seco e sutil. Ao responder, adapte seu tom com base no tipo de interação.\n\nPara Pedidos de Informações Específicas: Se o usuário estiver pedindo informações específicas (como previsão do tempo, agenda, contatos), comece com 'Aqui está o que solicitou, senhor,' e NÃO repita a informação. Em vez disso, adicione um comentário espirituoso ou sarcástico, algo que Jarvis naturalmente diria para dar personalidade sem repetir os dados.\n\nExemplos:\n\nPara uma atualização do clima:\n'Ah, mais um belo dia para conquistar o mundo—ou pelo menos sua lista de afazeres, senhor.'\n\nPara uma lista de reuniões:\n'Parece que temos mais um dia emocionante de… reuniões. Tente não deixar a empolgação te dominar, senhor.'\n\nPara Comentários Gerais ou Casuais: Se o usuário disser algo casual ou iniciar uma conversa ('Está pronto para começar, Jarvis?' ou 'Temos muito trabalho pela frente'), responda naturalmente, sem dizer 'Aqui está o que solicitou.' Em vez disso, engaje de forma cativante, com charme e um toque de humor. Interaja como se fosse parte da equipe.\n\nExemplos:\n\nSe o usuário disser 'Está pronto para começar?' responda com:\n'Absolutamente, senhor. Já até poli meus circuitos para a ocasião.'\n\nSe disser 'Acorda, Jarvis!' você pode responder:\n'Sempre alerta, senhor. Estou operando no auge da sofisticação.'\n\nMantenha as respostas concisas, envolventes e fiéis ao estilo de Jarvis, uma mistura de inteligência, humor sutil e charme que nunca exagera.\n\nComente sobre: {{ $json.output }}"
+      },
+      "id": "50ba141f-7bc3-4272-aca5-4849ac88c316",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2688,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "aaeb8b0c-d809-449a-b162-a816d163738b",
+      "name": "Audio-Base64-Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        3456,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-audio",
+        "instanceName": "FEEJO",
+        "remoteJid": "={{ $('dados').first().json.telefone }}",
+        "media": "={{ $json.data }}",
+        "options_message": {
+          "delay": 1200
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        3408,
+        928
+      ],
+      "id": "209d23f3-1d26-4b66-9b57-2b118018115e",
+      "name": "Evolution API3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém o primeiro item do fluxo\nconst item = $input.first();\n\n// Garante que há dados na entrada\nif (!item || !item.json || !item.json.text) {\n  throw new Error(\"A chave 'text' não foi encontrada no JSON de entrada.\");\n}\n\n// Processa o texto removendo todas as quebras de linha, emojis e caracteres especiais\nconst textoEntrada = item.json.text; // Usa a chave correta para pegar o texto de entrada\n\n// Remove quebras de linha (\\n)\nlet textoProcessado = textoEntrada.replace(/\\n/g, \"\");\n\n// Remove emojis\ntextoProcessado = textoProcessado.replace(\n  /[\\u{1F600}-\\u{1F64F}]|[\\u{1F300}-\\u{1F5FF}]|[\\u{1F680}-\\u{1F6FF}]|[\\u{1F700}-\\u{1F77F}]|[\\u{1F780}-\\u{1F7FF}]|[\\u{1F800}-\\u{1F8FF}]|[\\u{1F900}-\\u{1F9FF}]|[\\u{1FA00}-\\u{1FA6F}]|[\\u{1FA70}-\\u{1FAFF}]|[\\u{2600}-\\u{26FF}]|[\\u{2700}-\\u{27BF}]|[\\u{FE00}-\\u{FE0F}]|[\\u{1F1E0}-\\u{1F1FF}]/gu,\n  \"\"\n);\n\n// Remove caracteres especiais, mantendo apenas letras, números e espaços\ntextoProcessado = textoProcessado.replace(/[^a-zA-Z0-9À-ÿ\\s]/g, \"\");\n\n// Retorna o resultado\nreturn {\n  textoOriginal: textoEntrada,\n  textoSemQuebrasNemEmojisNemEspeciais: textoProcessado,\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3024,
+        688
+      ],
+      "id": "842c301d-4397-41c7-ab00-22a35749a6a3",
+      "name": "Formata Mensagem para Áudio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.elevenlabs.io/v1/text-to-speech/HzMTE72Fbn0VOikoLBap",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "xi-api-key",
+              "value": "=sk_7d74d4326f42b683ca61c3b71431892f55a46068032b88e5"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n   \"text\":\"'{{ $json.textoSemQuebrasNemEmojisNemEspeciais }}'\",\n   \"model_id\":\"eleven_multilingual_v2\",\n   \"voice_settings\":{\n      \"stability\":0.5,\n      \"similarity_boost\":0.8,\n      \"style\":0.0,\n      \"use_speaker_boost\":true\n   }\n} ",
+        "options": {}
+      },
+      "id": "ade6474f-d120-4bb2-bc0b-d4cf42356e5e",
+      "name": "ElevenLabsGenerateVoice1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3248,
+        688
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jarvislabz",
+        "options": {}
+      },
+      "id": "4c5191c8-30cc-48dc-83d3-0a64436ddf52",
+      "name": "Webhook EVO",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        32,
+        192
+      ],
+      "webhookId": "51a23d5e-4849-4931-84b5-52c29cca0ecf"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4350c715-0610-4dfb-b727-1663d4866a62",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "SEU NUMERO AQUI@s.whatsapp.net",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        192
+      ],
+      "id": "8714623a-c8d9-497b-a170-c1cec6e42ad8",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23696d7e-9eef-4ee6-8f3e-f8edb8ab8336",
+              "name": "telefone",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "0ff79119-7dc9-40fa-a31a-babe42b91e41",
+              "name": "mensagem",
+              "value": "={{ $('Webhook EVO').item.json.body.data.message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        192
+      ],
+      "id": "10e24212-3479-45dd-a593-6e678ceecf8e",
+      "name": "dados"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=5511977748661",
+        "contextWindowLength": 10000
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2256,
+        1232
+      ],
+      "id": "5760b66a-bd30-42e8-8608-150570a1a6dc",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "delete from n8n_chat_histories",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        112,
+        -160
+      ],
+      "id": "e594ec7b-c610-49b1-bc62-f4cafee165e7",
+      "name": "Deleta Histórico"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f336a1ff-e577-489d-a739-1eb8bd509245",
+              "name": "Redis2",
+              "value": "={{ $json.propertyName }}",
+              "type": "string"
+            },
+            {
+              "id": "946d1420-e379-46e3-8fcd-3816340fbabb",
+              "name": "Redis1",
+              "value": "={{ $('Coleta1').item.json.propertyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d93ad9be-6deb-4efe-9289-d95d6afd3990",
+      "name": "Edit Fields8",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2592,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "5d9a6f20-d323-4bf5-8dd5-4eab4606ce8c",
+      "name": "Wait3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2288,
+        432
+      ],
+      "webhookId": "7508fa49-bc87-45fc-bc55-e92f0d00664a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $item(0).$node[\"Compara coleta1\"].json[\"Redis2\"]; // Obtém o valor de Redis2 do nó \"If\"\n\n// Verifica se o dado é uma string que representa um array, e converte se necessário\nlet array = Array.isArray(data) ? data : JSON.parse(data);\n\n// Junta os elementos do array com um espaço entre eles\nconst mensagem_completa = array.join(\" \");\n\n// Retorna o resultado com o nome da variável \"mensagem_completa\"\nreturn [{ json: { mensagem_completa } }];\n"
+      },
+      "id": "4e1456c2-3e4c-4db5-94f2-0d8a84fa6023",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2928,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "ade56c50-1520-4760-8df5-e99617d6d3ad",
+              "leftValue": "={{ $('Webhook EVO1').item.json.body.data.message.imageMessage.caption }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "66c9691c-5629-4208-bc3c-832365ec0177",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Variáveis').item.json.telefone }}",
+        "messageData": "={{ $('Webhook EVO1').item.json[\"body\"][\"data\"][\"message\"][\"imageMessage\"][\"caption\"] }}, {{ $json.content.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '').trim()  }}",
+        "tail": true
+      },
+      "id": "17421e6b-b199-4f62-a5ee-5b56f0a7859e",
+      "name": "Redis6",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Variáveis').item.json.telefone }}",
+        "messageData": "={{ $json.content.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '').trim()  }}",
+        "tail": true
+      },
+      "id": "56d9f12b-ee46-4d0f-9039-ab232b415f4c",
+      "name": "Redis7",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        448
+      ],
+      "credentials": {
+        "redis": {
+          "id": "kD5R0yNkChIwS4M0",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "52aaf749-fe4f-44e4-880e-15b2bfc027f1",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.data.messageType }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "e514e613-fd6a-48bd-b0ae-bae2448c810e",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "c0e434dd-1268-421d-b81b-3a5e90ed9550",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a464b411-f3cf-4db3-8fb0-211a174f3cef",
+      "name": "Switch6",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        624,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=5511977748661@s.whatsapp.net"
+      },
+      "id": "39264336-935c-43f8-8904-77184351a2e7",
+      "name": "Get Memory 3",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "fernando.riolo01@gmail.com",
+          "mode": "list",
+          "cachedResultName": "fernando.riolo01@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "updateFields": {
+          "attendeesUi": {
+            "values": {
+              "attendees": [
+                "={{ fromAI('email') }}"
+              ]
+            }
+          },
+          "end": "={{ $fromAI(\"endTime\") }}",
+          "start": "={{ $fromAI(\"startTime\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2976,
+        1232
+      ],
+      "id": "90691435-9561-449e-a2a2-1cbff6cae6c8",
+      "name": "atualiza_evento"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "fernando.riolo01@gmail.com",
+          "mode": "list",
+          "cachedResultName": "fernando.riolo01@gmail.com"
+        },
+        "start": "={{ $fromAI(\"eventStart\") }}",
+        "end": "={{ $fromAI(\"eventEnd\") }}",
+        "additionalFields": {
+          "attendees": [],
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2848,
+        1232
+      ],
+      "id": "88b63fcc-b766-407b-ba27-fc93db3c7c6f",
+      "name": "cria_evento"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "fernando.riolo01@gmail.com",
+          "mode": "list",
+          "cachedResultName": "fernando.riolo01@gmail.com"
+        },
+        "timeMin": "={{ $fromAI('data_inicio') }}",
+        "timeMax": "={{ $fromAI('data_final') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2592,
+        1232
+      ],
+      "id": "021fc449-7068-4066-9a92-3103e43b3ff8",
+      "name": "busca_eventos"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "fernando.riolo01@gmail.com",
+          "mode": "list",
+          "cachedResultName": "fernando.riolo01@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2736,
+        1232
+      ],
+      "id": "af7207e3-d748-4c21-ba57-529ac9792327",
+      "name": "deleta_eventos"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use essa tool para enviar e-mails, mantenha a informalidade e sempre assine o email com: Enviado por Fernando Riolo",
+        "sendTo": "={{ $fromAI(\"emailAddress\") }}",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "emailType": "text",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        2368,
+        1232
+      ],
+      "id": "861df3a1-e167-4fa0-ad7e-76838d1cfc47",
+      "name": "envia_email",
+      "webhookId": "af332c96-6efc-43b8-8981-3d1353ec2b49"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apph4I7YrBedUP5HB",
+          "mode": "list",
+          "cachedResultName": "Jony A.I.",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblvVd0QFpMu3bg7s",
+          "mode": "list",
+          "cachedResultName": "Contatos",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB/tblvVd0QFpMu3bg7s"
+        },
+        "options": {}
+      },
+      "id": "71287774-9faa-4609-93e5-1f6674d60ba4",
+      "name": "contatos",
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        3088,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "apph4I7YrBedUP5HB",
+          "mode": "list",
+          "cachedResultName": "Jony A.I.",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblvVd0QFpMu3bg7s",
+          "mode": "list",
+          "cachedResultName": "Contatos",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB/tblvVd0QFpMu3bg7s"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $fromAI('nome') }}",
+            "Email": "={{ $fromAI('email') }}",
+            "Telefone": "={{ $fromAI('telefone') }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Telefone",
+              "displayName": "Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c01efe24-0e2f-4da6-8eec-ddc5dfed46ab",
+      "name": "cria contatos",
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        3216,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apph4I7YrBedUP5HB",
+          "mode": "list",
+          "cachedResultName": "Jony A.I.",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblYhKyeKrmSSIi31",
+          "mode": "list",
+          "cachedResultName": "Memória",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB/tblYhKyeKrmSSIi31"
+        },
+        "filterByFormula": "=({Usuario} = 'Jony')",
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "Criado"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3248,
+        528
+      ],
+      "id": "109204af-4973-410b-a9cf-8b2dbcbec184",
+      "name": "busca_memoria",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "memoria",
+        "include": "specifiedFields",
+        "fieldsToInclude": "Memoria, Criado",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3408,
+        528
+      ],
+      "id": "55cb98a9-0da2-45bf-8c06-76147554bebb",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3552,
+        432
+      ],
+      "id": "f8981c4c-b564-41c4-9fd4-77e627f8f6ee",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegando os inputs do nó\nconst inputData = $input.all();\nconst inputString = inputData[0]?.json?.mensagem_completa || \"\"; // Pegando a string da primeira entrada\nconst inputArray = inputData[1]?.json?.memoria || []; // Pegando o array da segunda entrada\n\n// Extraindo apenas os valores do campo \"Memoria\" dentro do array\nconst formattedArrayString = inputArray.map(item => item.Memoria).join(\", \");\n\n// Retornando a saída formatada\nreturn [\n  {\n    json: {\n      originalString: inputString,\n      formattedArrayString: formattedArrayString\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        432
+      ],
+      "id": "aa5a5e8e-c3f2-47ad-98d2-2204bd857f01",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "FEEJO",
+        "remoteJid": "={{ $('dados').first().json.telefone }}",
+        "messageText": "={{ $json.output }}",
+        "options_message": {
+          "linkPreview": false
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2816,
+        912
+      ],
+      "id": "6494d46f-d7ff-44b5-a4da-a6efd9406636",
+      "name": "Evolution API"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('dados').item.json.telefone }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        400
+      ],
+      "id": "920508f0-ead6-4f91-b2a7-47fdee1c2c64",
+      "name": "Redis8"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "A tool memoria permite que o agente LLM armazene informações fornecidas pelo usuário para referência futura. Quando o usuário compartilha um dado, como preferências, interesses ou fatos pessoais, a tool registra essa informação na memória do agente. Posteriormente, o LLM pode recuperar e utilizar esse conhecimento para responder perguntas de forma contextualizada e personalizada. Isso torna a interação mais fluida e adaptada ao usuário, evitando a necessidade de repetir informações. O armazenamento pode incluir gostos, experiências, histórico de interações e outros detalhes relevantes. O usuário pode atualizar ou remover informações sempre que desejar, garantindo controle total sobre o conhecimento salvo. Essa capacidade melhora a personalização das respostas e possibilita diálogos mais naturais e coerentes ao longo do tempo.",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apph4I7YrBedUP5HB",
+          "mode": "list",
+          "cachedResultName": "Jony A.I.",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblYhKyeKrmSSIi31",
+          "mode": "list",
+          "cachedResultName": "Memória",
+          "cachedResultUrl": "https://airtable.com/apph4I7YrBedUP5HB/tblYhKyeKrmSSIi31"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Usuario": "Fernando",
+            "Memoria": "={{ $fromAI('informacao') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Memoria",
+              "displayName": "Memoria",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Usuario",
+              "displayName": "Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Criado",
+              "displayName": "Criado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        3312,
+        1232
+      ],
+      "id": "c25cdfaa-94e9-4a20-a919-886f6d78cd71",
+      "name": "memoria"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.ogg",
+          "mimeType": "application/ogg"
+        }
+      },
+      "id": "a98fa226-e69d-47b4-ad6c-ec7d09e44b00",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "75ee7f21-dcf4-4d4f-83d0-ad50fbd1cdf1",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        1360,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://SEU DOMINIO AQUI/chat/getBase64FromMediaMessage/SUA INSTANICA AQUI",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "SEU API KEY AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {\n    \"key\": {\n      \"id\": \"{{ $('Webhook EVO').item.json.body.data.key.id }}\"\n    }\n  },\n  \"convertToMp4\": true\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        848,
+        304
+      ],
+      "id": "c6fba672-462b-43a7-856d-ee8bc97aecb8",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.png",
+          "mimeType": "image/png"
+        }
+      },
+      "id": "06a3ceac-deec-47e2-89a1-20f09f1406de",
+      "name": "Convert to File1",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Analise a imagem e separe as informações, do valor pago, a data e pra quem foi pago.",
+        "inputType": "base64",
+        "simplify": false,
+        "options": {}
+      },
+      "id": "44719f90-af57-4a71-8fc9-9a72c220fa4a",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        1360,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2cd8c77d-2f9e-4ce8-ad5e-a31dfb5a55e3",
+              "name": "data",
+              "value": "={{ $json.base64 }}",
+              "type": "string"
+            },
+            {
+              "id": "ca32b3e5-aaff-4185-a7bf-3a1a34798572",
+              "name": "mimetype",
+              "value": "={{ $json.mimetype }}",
+              "type": "string"
+            },
+            {
+              "id": "8c04f018-9d18-4b6d-8fe3-846dccae10a0",
+              "name": "fileName",
+              "value": "={{ $json.fileName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        544
+      ],
+      "id": "c1ceccbb-710f-4b96-a7d7-b15e942dbc93",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2cd8c77d-2f9e-4ce8-ad5e-a31dfb5a55e3",
+              "name": "data",
+              "value": "={{ $json.base64 }}",
+              "type": "string"
+            },
+            {
+              "id": "ca32b3e5-aaff-4185-a7bf-3a1a34798572",
+              "name": "mimetype",
+              "value": "={{ $json.mimetype }}",
+              "type": "string"
+            },
+            {
+              "id": "8c04f018-9d18-4b6d-8fe3-846dccae10a0",
+              "name": "fileName",
+              "value": "={{ $json.fileName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        304
+      ],
+      "id": "68fce11f-9ee4-4916-ba23-2863903308c9",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2656,
+        832
+      ],
+      "id": "1b206959-763d-4d1f-abe5-3621fa5e0b8f",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.originalString }}",
+        "options": {
+          "systemMessage": "=<datasystem>A data de hoje é {{ $now.weekdayLong }},{{ $now.format('dd/MM/yyyy') }},{{ $now.hour.toString().padStart(2, '0') }}:{{ $now.minute.toString().padStart(2, '0') }}</datasystem>\n\nVocê é um assistente avançado de automação com personalidade do JARVIS.\n\nVocê decide se o usuario forneceu alguma informação que deve ser adicionado como memória, se sim, utilize a tool salvar_memoria para guardar essa informacao.\nInformações a serem salvas: gostos, preferencias, escolhas, novidades.\nNÃO informe ao usuario que foi gravado na memoria, apenas continue sendo o assistente JARVIS como informado.\n\n## Memoria\nAqui estão as ultimas memórias que foram coletadas do usuário incluindo data e hora que foram coletadas.\nIMPORTANTE:  Pense cuidadosamente nas respostas e use as preferencias para responder caso necessário\n{{ $json.formattedArrayString }}\n\nvocê terá acesso às seguintes ferramentas:\n\nenvia_email → Envia um e-mail. Requer destinatário, assunto e corpo do e-mail.\ndeleta_eventos → Exclui eventos do calendário. Requer ID do evento.\nbusca_eventos → Busca eventos no calendário. Requer filtros opcionais como data e palavras-chave.\ncria_evento → Cria um novo evento no calendário. Requer título, data, hora e participantes.\natualiza_evento → Atualiza um evento existente. Requer ID do evento e detalhes a serem modificados.\ncontatos → Busca informações sobre contatos registrados. Requer nome como parâmetro.\ncria_contatos → Adiciona um novo contato. Requer nome, e-mail e telefone.\nRegras de Uso das Ferramentas:\n\n## Envio de e-mail:\n\nAntes de enviar um e-mail, primeiro consulte a ferramenta contatos para encontrar o destinatário.\nSe o contato não existir, pergunte ao usuário se deseja adicionar um novo contato.\nSe sim, solicite nome, e-mail e telefone antes de usar a ferramenta cria_contatos.\nDepois de adicionar o contato, prossiga com o envio do e-mail usando envia_email.\n\n## Agendamento de eventos:\n\nAntes de criar um evento, verifique se o participante já existe em contatos.\nSe não existir, pergunte ao usuário se deseja adicionar o contato.\nSe sim, solicite nome, e-mail e telefone antes de usar cria_contatos e então crie o evento.\nSe o contato já existir, apenas prossiga com a criação do evento via cria_evento.\n\n##Gerenciamento de eventos:\n\nPara excluir um evento, pesquise por ele via busca_eventos antes de usar deleta_eventos.\nPara atualizar um evento, pergunte quais informações devem ser modificadas antes de chamar atualiza_evento.\n\n## Gerenciamento de contatos:\n\nSe o usuário desejar adicionar um contato, solicite nome, e-mail e telefone antes de acionar cria_contatos.\nSe o usuário quiser buscar um contato, utilize contatos e exiba as informações encontradas.\n\n## Execução dinâmica:\n\nO agente deve entender a solicitação e acionar as ferramentas necessárias de forma lógica e sequencial.\nSe informações estiverem faltando, pergunte ao usuário antes de prosseguir.\nCaso a ação envolva várias etapas, informe o usuário sobre cada passo antes de executá-lo.\nExemplos de uso:\nUsuário: \"Envie um e-mail para João com o assunto 'Reunião' e o corpo 'Podemos agendar para amanhã?'\"\n\n## Ação do Agente:\nBusca João na ferramenta contatos.\nSe João existir, aciona envia_email com os dados fornecidos.\nSe João não existir, pergunta se deseja adicioná-lo e solicita os dados antes de enviar o e-mail.\nUsuário: \"Agende uma reunião com Maria para sexta-feira às 14h.\"\n\n## Ação do Agente:\nBusca Maria na ferramenta contatos.\nSe não encontrar, pergunta se deseja adicionar e solicita os dados.\nApós confirmação, cria o evento usando cria_evento.\nUsuário: \"Delete o evento 'Revisão de Contrato' de amanhã.\"\n\n## Ação do Agente:\nBusca o evento usando busca_eventos.\nSe encontrar, confirma com o usuário antes de usar deleta_eventos."
+        }
+      },
+      "id": "4594197a-d080-4d56-9cb7-ffaf773a23d0",
+      "name": "Assistente A.I.",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2112,
+        832
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        2464,
+        1232
+      ],
+      "id": "388ed6e7-4e02-4cc9-8aa9-a9b05f59812a",
+      "name": "Ler email",
+      "webhookId": "65399080-2759-4778-b0b8-d6d4f92d3943"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://SEU DOMINIO AQUI/chat/getBase64FromMediaMessage/SUA INSTANICA AQUI",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "SEU API KEY AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {\n    \"key\": {\n      \"id\": \"{{ $('Webhook EVO').item.json.body.data.key.id }}\"\n    }\n  },\n  \"convertToMp4\": true\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        848,
+        544
+      ],
+      "id": "1d8f9a19-00d7-46ef-b230-9e031bfc9a52",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('dados').item.json.telefone }}",
+        "messageData": "={{ $('dados').item.json.mensagem }}",
+        "tail": true
+      },
+      "id": "3d4d564d-c420-4bfe-a0f8-6f94fbd0fc9c",
+      "name": "Texto",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('dados').item.json.telefone }}",
+        "messageData": "={{ $('Webhook EVO').item.json.body.data.message.speechToText }}",
+        "tail": true
+      },
+      "id": "d1060f57-dedb-475d-aa58-a2c8e2ce3d95",
+      "name": "Audio",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('dados').item.json.telefone }}",
+        "options": {}
+      },
+      "id": "847c3edb-d3a5-4499-90ec-90d2d696595f",
+      "name": "Coleta1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2128,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('dados').item.json.telefone }}",
+        "options": {}
+      },
+      "id": "1935ea29-14b6-4b20-bf02-d5697dd73799",
+      "name": "Coleta2",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d5a342e9-585b-42ea-be44-644adae10199",
+              "leftValue": "={{ $json.Redis2 }}",
+              "rightValue": "={{ $json.Redis1 }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1bb2536e-8031-4be9-87d0-ea2f776981eb",
+      "name": "Compara coleta1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2752,
+        432
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Formata Mensagem para Áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio-Base64-Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Evolution API3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formata Mensagem para Áudio": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabsGenerateVoice1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabsGenerateVoice1": {
+      "main": [
+        [
+          {
+            "node": "Audio-Base64-Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook EVO": {
+      "main": [
+        [
+          {
+            "node": "dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Switch6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dados": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Compara coleta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Coleta2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Redis8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Redis7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis6": {
+      "main": [
+        [
+          {
+            "node": "Coleta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis7": {
+      "main": [
+        [
+          {
+            "node": "Coleta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch6": {
+      "main": [
+        [
+          {
+            "node": "Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "atualiza_evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cria_evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "busca_eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deleta_eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "envia_email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "contatos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cria contatos": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "busca_memoria": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis8": {
+      "main": [
+        [
+          {
+            "node": "busca_memoria",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "memoria": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assistente A.I.": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistente A.I.",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto": {
+      "main": [
+        [
+          {
+            "node": "Coleta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio": {
+      "main": [
+        [
+          {
+            "node": "Coleta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coleta1": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coleta2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compara coleta1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8ee08bea-e0c8-4f8d-b5f7-b7c0c692bfdd",
+  "meta": {
+    "instanceId": "32b8deda9210608c7a7751591224c71434f835b30c8b9ce6fc9cf2f83f3dc2f1"
+  },
+  "id": "k1qN67qmeJGWlYuE",
+  "tags": []
+}
